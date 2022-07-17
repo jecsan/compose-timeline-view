@@ -64,7 +64,7 @@ allprojects {
 
 ```groovy
 dependencies {
-    implementation 'com.github.jecsan:compose-timeline-view:0.1'
+    implementation 'com.github.jecsan:compose-timeline-view:v0.1.1'
 }
 
 ```
