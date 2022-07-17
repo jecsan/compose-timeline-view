@@ -4,6 +4,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.BottomDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
@@ -12,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -120,6 +122,7 @@ object TimelineView {
         ConstraintLayout(
             modifier = Modifier
                 .requiredHeight(lineHeight)
+                .fillMaxWidth()
                 .padding(horizontal = 17.dp)
 
         ) {
@@ -139,29 +142,38 @@ object TimelineView {
 
                     }, contentAlignment = Alignment.Center
             ) {
-                if (lineColors == null) {
-                    LineDrawing(
-                        nodeType = nodeType,
-                        isDashed = isDashed,
-                        lineColor = lineColor,
-                        nodeRadius = nodeRadius
-                    )
-                } else {
-                    LineDrawing(
-                        nodeType = nodeType, lineColors = lineColors, nodeRadius = nodeRadius
-                    )
+
+                Canvas(
+                    modifier = Modifier
+                        .padding(horizontal = 17.dp)
+                        .fillMaxHeight()
+                ) {
+                    if (lineColors == null) {
+                        lineDrawing(
+                            nodeType = nodeType,
+                            isDashed = isDashed,
+                            lineColor = lineColor,
+                            nodeRadius = nodeRadius
+                        )
+                    } else {
+                        lineDrawing(
+                            nodeType = nodeType, lineColors = lineColors, nodeRadius = nodeRadius
+                        )
+                    }
+
                 }
 
 
+
                 Box(
-                    modifier = Modifier.padding(horizontal = 17.dp),
+                    modifier = Modifier.requiredWidth(71.dp),
                     contentAlignment = Alignment.Center
                 ) {
 
                     if (nodeType != NodeType.SPACER) {
                         node()
                     } else {
-                        Box(modifier = Modifier.width((nodeSize / 2).dp))
+                        Box(modifier = Modifier)
                     }
                 }
             }
@@ -191,63 +203,53 @@ object TimelineView {
         }
     }
 
-    @Composable
-    private fun LineDrawing(
+    private fun DrawScope.lineDrawing(
         nodeType: NodeType, lineColors: Brush, nodeRadius: Float
     ) {
-        Canvas(
-            modifier = Modifier
-                .padding(horizontal = 17.dp)
-                .fillMaxHeight()
-        ) {
-            val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
 
-            when (nodeType) {
-                NodeType.FIRST -> {
-                    drawBottomLine(lineColors, lineWidth, nodeRadius)
-                }
-                NodeType.MIDDLE -> {
-                    drawTopLine(lineColors, lineWidth, nodeRadius)
-                    drawBottomLine(lineColors, lineWidth, nodeRadius)
-                }
-                NodeType.LAST -> {
-                    drawTopLine(lineColors, lineWidth, nodeRadius)
-                }
-                NodeType.SPACER -> {
-                    drawSpacerLine(lineColors, lineWidth)
-                }
+        val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
+
+        when (nodeType) {
+            NodeType.FIRST -> {
+                drawBottomLine(lineColors, lineWidth, nodeRadius)
+            }
+            NodeType.MIDDLE -> {
+                drawTopLine(lineColors, lineWidth, nodeRadius)
+                drawBottomLine(lineColors, lineWidth, nodeRadius)
+            }
+            NodeType.LAST -> {
+                drawTopLine(lineColors, lineWidth, nodeRadius)
+            }
+            NodeType.SPACER -> {
+                drawSpacerLine(lineColors, lineWidth)
             }
         }
+
     }
 
-    @Composable
-    private fun LineDrawing(
+    private fun DrawScope.lineDrawing(
         nodeType: NodeType, isDashed: Boolean, lineColor: Color, nodeRadius: Float
     ) {
-        Canvas(
-            modifier = Modifier
-                .padding(horizontal = 17.dp)
-                .fillMaxHeight()
-        ) {
-            val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
 
-            when (nodeType) {
-                NodeType.FIRST -> {
-                    drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
-                }
-                NodeType.MIDDLE -> {
-                    drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
-                    drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
-                }
-                NodeType.LAST -> {
-                    drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
-                }
-                NodeType.SPACER -> {
-                    drawSpacerLine(isDashed, lineColor, lineWidth)
-                }
+        val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
+
+        when (nodeType) {
+            NodeType.FIRST -> {
+                drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
+            }
+            NodeType.MIDDLE -> {
+                drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
+                drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
+            }
+            NodeType.LAST -> {
+                drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
+            }
+            NodeType.SPACER -> {
+                drawSpacerLine(isDashed, lineColor, lineWidth)
             }
         }
     }
+
 }
 
 
