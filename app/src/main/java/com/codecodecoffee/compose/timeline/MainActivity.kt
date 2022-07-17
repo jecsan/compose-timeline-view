@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                             .verticalScroll(rememberScrollState())
                             .fillMaxWidth()
                     ) {
-                        
+
 
 
                         CompositionLocalProvider(
