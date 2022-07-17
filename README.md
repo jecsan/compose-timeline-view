@@ -1,6 +1,6 @@
 # Jetpack Compose Timeline View
 
-Based from ![](https://github.com/yeocak/ComposableTimelineView)
+Based from https://github.com/yeocak/ComposableTimelineView
 
 ------
 
