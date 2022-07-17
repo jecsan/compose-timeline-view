@@ -6,9 +6,10 @@ Based from https://github.com/yeocak/ComposableTimelineView
 
 #### *Screenshots*
 
-![](https://github.com/jecsan/compose-timeline-view/blob/main/sample_1.png)
-![](https://github.com/jecsan/compose-timeline-view/blob/main/sample_2.png)
-![](https://github.com/jecsan/compose-timeline-view/blob/main/sample_3.png)
+<img src="https://github.com/jecsan/compose-timeline-view/blob/main/sample_1.png " height="550"/>
+<img src="https://github.com/jecsan/compose-timeline-view/blob/main/sample_2.png " height="550"/>
+<img src="https://github.com/jecsan/compose-timeline-view/blob/main/sample_3.png " height="550"/>
+
 ------
 
 #### *Usage:*
