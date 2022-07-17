@@ -1,4 +1,4 @@
-package com.yeocak.composabletimelineview.ui.theme
+package com.codecodecoffee.compose.timeline.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

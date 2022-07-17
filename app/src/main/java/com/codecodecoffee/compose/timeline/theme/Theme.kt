@@ -1,4 +1,4 @@
-package com.yeocak.composabletimelineview.ui.theme
+package com.codecodecoffee.compose.timeline.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
@@ -28,7 +28,7 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun ComposableTimelineViewTheme(
+fun ComposeTimelineTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
