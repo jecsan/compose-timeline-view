@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -31,10 +32,7 @@ val LocalTimelineConfig = compositionLocalOf { TimelineConfig() }
 
 object TimelineView {
     enum class NodeType {
-        FIRST,
-        MIDDLE,
-        LAST,
-        SPACER
+        FIRST, MIDDLE, LAST, SPACER
     }
 
     enum class ContentPosition {
@@ -44,7 +42,34 @@ object TimelineView {
 
     @Composable
     fun SingleNode(
-        modifier: Modifier = Modifier,
+        position: Int = 0,
+        nodeType: NodeType = NodeType.MIDDLE,
+        contentPosition: ContentPosition = LocalTimelineConfig.current.contentPosition,
+        lineColors: Brush,
+        nodeColor: Color = LocalTimelineConfig.current.nodeColor,
+        nodeSize: Float = LocalTimelineConfig.current.nodeSize,
+        lineHeight: Dp = LocalTimelineConfig.current.lineHeight,
+        node: @Composable () -> Unit = {
+            DefaultNode(
+                nodeColor = nodeColor, nodeSize = nodeSize
+            )
+        },
+        content: @Composable () -> Unit = {}
+    ) {
+        InternalSingleNode(
+            position,
+            nodeType,
+            contentPosition,
+            lineHeight = lineHeight,
+            lineColors = lineColors,
+            node = node,
+            content = content
+        )
+    }
+
+
+    @Composable
+    fun SingleNode(
         position: Int = 0,
         nodeType: NodeType = NodeType.MIDDLE,
         contentPosition: ContentPosition = LocalTimelineConfig.current.contentPosition,
@@ -55,18 +80,48 @@ object TimelineView {
         isDashed: Boolean = false,
         node: @Composable () -> Unit = {
             DefaultNode(
-                nodeColor = nodeColor,
-                nodeSize = nodeSize
+                nodeColor = nodeColor, nodeSize = nodeSize
             )
         },
         content: @Composable () -> Unit = {}
     ) {
+        InternalSingleNode(
+            position,
+            nodeType,
+            contentPosition,
+            lineColor,
+            isDashed = isDashed,
+            lineHeight = lineHeight,
+            node = node,
+            content = content
+        )
+
+    }
 
 
+    @Composable
+    private fun InternalSingleNode(
+        position: Int = 0,
+        nodeType: NodeType = NodeType.MIDDLE,
+        contentPosition: ContentPosition = LocalTimelineConfig.current.contentPosition,
+        lineColor: Color = LocalTimelineConfig.current.lineColor,
+        lineColors: Brush? = null,
+        nodeColor: Color = LocalTimelineConfig.current.nodeColor,
+        nodeSize: Float = LocalTimelineConfig.current.nodeSize,
+        lineHeight: Dp = LocalTimelineConfig.current.lineHeight,
+        isDashed: Boolean = false,
+        node: @Composable () -> Unit = {
+            DefaultNode(
+                nodeColor = nodeColor, nodeSize = nodeSize
+            )
+        },
+        content: @Composable () -> Unit = {}
+    ) {
         ConstraintLayout(
             modifier = Modifier
                 .requiredHeight(lineHeight)
-                .fillMaxWidth()
+                .padding(horizontal = 17.dp)
+
         ) {
 
             val (timeline, details) = createRefs()
@@ -84,34 +139,22 @@ object TimelineView {
 
                     }, contentAlignment = Alignment.Center
             ) {
-                Canvas(
-                    modifier = modifier
-                        .padding(horizontal = 17.dp)
-                        .fillMaxHeight()
-                ) {
-                    val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
-
-                    when (nodeType) {
-                        NodeType.FIRST -> {
-                            drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
-                        }
-                        NodeType.MIDDLE -> {
-                            drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
-                            drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
-                        }
-                        NodeType.LAST -> {
-                            drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
-                        }
-                        NodeType.SPACER -> {
-                            drawSpacerLine(isDashed, lineColor, lineWidth)
-                        }
-                    }
+                if (lineColors == null) {
+                    LineDrawing(
+                        nodeType = nodeType,
+                        isDashed = isDashed,
+                        lineColor = lineColor,
+                        nodeRadius = nodeRadius
+                    )
+                } else {
+                    LineDrawing(
+                        nodeType = nodeType, lineColors = lineColors, nodeRadius = nodeRadius
+                    )
                 }
 
 
                 Box(
-                    modifier = Modifier
-                        .padding(horizontal = 17.dp),
+                    modifier = Modifier.padding(horizontal = 17.dp),
                     contentAlignment = Alignment.Center
                 ) {
 
@@ -147,16 +190,73 @@ object TimelineView {
 
         }
     }
+
+    @Composable
+    private fun LineDrawing(
+        nodeType: NodeType, lineColors: Brush, nodeRadius: Float
+    ) {
+        Canvas(
+            modifier = Modifier
+                .padding(horizontal = 17.dp)
+                .fillMaxHeight()
+        ) {
+            val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
+
+            when (nodeType) {
+                NodeType.FIRST -> {
+                    drawBottomLine(lineColors, lineWidth, nodeRadius)
+                }
+                NodeType.MIDDLE -> {
+                    drawTopLine(lineColors, lineWidth, nodeRadius)
+                    drawBottomLine(lineColors, lineWidth, nodeRadius)
+                }
+                NodeType.LAST -> {
+                    drawTopLine(lineColors, lineWidth, nodeRadius)
+                }
+                NodeType.SPACER -> {
+                    drawSpacerLine(lineColors, lineWidth)
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun LineDrawing(
+        nodeType: NodeType, isDashed: Boolean, lineColor: Color, nodeRadius: Float
+    ) {
+        Canvas(
+            modifier = Modifier
+                .padding(horizontal = 17.dp)
+                .fillMaxHeight()
+        ) {
+            val lineWidth = (3f / 3.5f * nodeRadius).coerceAtMost(40f)
+
+            when (nodeType) {
+                NodeType.FIRST -> {
+                    drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
+                }
+                NodeType.MIDDLE -> {
+                    drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
+                    drawBottomLine(isDashed, lineColor, lineWidth, nodeRadius)
+                }
+                NodeType.LAST -> {
+                    drawTopLine(isDashed, lineColor, lineWidth, nodeRadius)
+                }
+                NodeType.SPACER -> {
+                    drawSpacerLine(isDashed, lineColor, lineWidth)
+                }
+            }
+        }
+    }
 }
+
 
 @Composable
 fun DefaultNode(nodeColor: Color, nodeSize: Float) {
     Box(
         modifier = Modifier
             .shadow(
-                9.dp,
-                shape = CircleShape,
-                clip = true
+                9.dp, shape = CircleShape, clip = true
             )
             .background(color = nodeColor, shape = CircleShape)
             .clip(CircleShape)

@@ -12,9 +12,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import com.codecodecoffee.compose.timeline.core.LocalTimelineConfig
 import com.codecodecoffee.compose.timeline.core.TimelineConfig
 import com.codecodecoffee.compose.timeline.core.TimelineView
@@ -50,11 +53,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color(0xFFf7f7f7)),
-                    color = Color.White
                 ) {
                     Column(
                         Modifier
-                            .fillMaxWidth()
                             .verticalScroll(rememberScrollState())
                     ) {
 
@@ -66,13 +67,21 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
 
-                            SingleNode(nodeType = TimelineView.NodeType.SPACER)
+                            SingleNode(
+                                nodeType = TimelineView.NodeType.SPACER,
+                                lineColors = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.White,
+                                        lineColor.copy(alpha = 0.7f),
+                                        lineColor
+                                    ),
+                                )
+                            )
 
                             timelines.forEachIndexed { index, item ->
                                 SingleNode(
                                     position = index,
-
-                                    ) {
+                                ) {
                                     Column() {
                                         Text(text = item.title, fontWeight = FontWeight.SemiBold)
                                         Text(text = item.description)
@@ -80,8 +89,12 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
-                            SingleNode(nodeType = TimelineView.NodeType.SPACER)
-
+                            SingleNode(
+                                nodeType = TimelineView.NodeType.SPACER,
+                                lineColors = Brush.verticalGradient(
+                                    colors = listOf(lineColor, Color.White)
+                                )
+                            )
                         }
 
 

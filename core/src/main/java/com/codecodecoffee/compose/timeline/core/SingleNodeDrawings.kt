@@ -1,6 +1,7 @@
 package com.codecodecoffee.compose.timeline.core
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -9,11 +10,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 internal object SingleNodeDrawings {
 
 
-
     fun DrawScope.drawSpacerLine(
-        isDashed: Boolean,
-        color: Color,
-        width: Float
+        isDashed: Boolean, color: Color, width: Float
     ) {
         val centerX = size.width / 2
 
@@ -39,10 +37,7 @@ internal object SingleNodeDrawings {
 
             for (a in 0 until numberOfDoubleLines) {
                 drawLine(
-                    color,
-                    currentTopPoint,
-                    currentBottomPoint,
-                    strokeWidth = width
+                    color, currentTopPoint, currentBottomPoint, strokeWidth = width
                 )
 
                 currentTopPoint = currentTopPoint.plus(Offset(0f, singleLinePart + spaceBetween))
@@ -51,19 +46,27 @@ internal object SingleNodeDrawings {
             }
 
             drawLine(
-                color,
-                currentTopPoint,
-                currentBottomPoint,
-                strokeWidth = width
+                color, currentTopPoint, currentBottomPoint, strokeWidth = width
             )
         } else {
             drawLine(
-                color,
-                topPoint,
-                bottomPoint,
-                strokeWidth = width
+                color, topPoint, bottomPoint, strokeWidth = width
             )
         }
+    }
+
+    fun DrawScope.drawSpacerLine(
+        color: Brush, width: Float
+    ) {
+        val centerX = size.width / 2
+
+        val topPoint = Offset(centerX, 0f)
+        val bottomPoint = Offset(centerX, size.height)
+
+        drawLine(
+            color, topPoint, bottomPoint, strokeWidth = width
+        )
+
     }
 
     fun DrawScope.drawTopLine(isDashed: Boolean, color: Color, width: Float, circleRadius: Float) {
@@ -82,10 +85,7 @@ internal object SingleNodeDrawings {
 
             while (currentBottomPoint.y < bottomPoint.y) {
                 drawLine(
-                    color,
-                    currentTopPoint,
-                    currentBottomPoint,
-                    strokeWidth = width
+                    color, currentTopPoint, currentBottomPoint, strokeWidth = width
                 )
 
                 currentTopPoint = currentTopPoint.plus(addingSet)
@@ -93,26 +93,29 @@ internal object SingleNodeDrawings {
             }
 
             drawLine(
-                color,
-                currentTopPoint,
-                bottomPoint,
-                strokeWidth = width
+                color, currentTopPoint, bottomPoint, strokeWidth = width
             )
         } else {
             drawLine(
-                color,
-                topPoint,
-                bottomPoint,
-                strokeWidth = width
+                color, topPoint, bottomPoint, strokeWidth = width
             )
         }
     }
 
+    fun DrawScope.drawTopLine(color: Brush, width: Float, circleRadius: Float) {
+        val centerX = size.width / 2
+
+        val topPoint = Offset(centerX, 0f)
+        val bottomPoint = Offset(centerX, size.height / 2 - circleRadius + 3)
+
+        drawLine(
+            color, topPoint, bottomPoint, strokeWidth = width
+        )
+
+    }
+
     fun DrawScope.drawBottomLine(
-        isDashed: Boolean,
-        color: Color,
-        width: Float,
-        circleRadius: Float
+        isDashed: Boolean, color: Color, width: Float, circleRadius: Float
     ) {
         val centerX = size.width / 2
 
@@ -129,10 +132,7 @@ internal object SingleNodeDrawings {
 
             while (currentTopPoint.y > topPoint.y) {
                 drawLine(
-                    color,
-                    currentTopPoint,
-                    currentBottomPoint,
-                    strokeWidth = width
+                    color, currentTopPoint, currentBottomPoint, strokeWidth = width
                 )
 
                 currentTopPoint = currentTopPoint.minus(addingSet)
@@ -140,18 +140,25 @@ internal object SingleNodeDrawings {
             }
 
             drawLine(
-                color,
-                topPoint,
-                currentBottomPoint,
-                strokeWidth = width
+                color, topPoint, currentBottomPoint, strokeWidth = width
             )
         } else {
             drawLine(
-                color,
-                topPoint,
-                bottomPoint,
-                strokeWidth = width
+                color, topPoint, bottomPoint, strokeWidth = width
             )
         }
+    }
+
+    fun DrawScope.drawBottomLine(
+        color: Brush, width: Float, circleRadius: Float
+    ) {
+        val centerX = size.width / 2
+
+        val topPoint = Offset(centerX, size.height / 2 + circleRadius - 3)
+        val bottomPoint = Offset(centerX, size.height)
+
+        drawLine(
+            color, topPoint, bottomPoint, strokeWidth = width
+        )
     }
 }
